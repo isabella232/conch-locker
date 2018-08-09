@@ -1,0 +1,37 @@
+{
+	"additionalProperties": "",
+	"properties": {
+		"bios_version": {
+			"type": "string"
+		},
+		"memory": {
+			"type": "object"
+		},
+		"processor": {
+			"type": "object"
+		},
+		"product_name": {
+			"type": "string"
+		},
+		"serial_number": {
+			"type": "string"
+		},
+		"state": {
+			"type": "string"
+		},
+		"system_uuid": {
+			"format": "uuid",
+			"type": "string"
+		}
+	},
+	"required": [
+		"product_name",
+		"serial_number",
+		"system_uuid",
+		"state",
+		"bios_version",
+		"processor",
+		"memory"
+	],
+	"type": "object"
+}

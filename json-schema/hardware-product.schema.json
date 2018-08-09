@@ -1,0 +1,202 @@
+{
+	"additionalProperties": "",
+	"properties": {
+		"alias": { "type": "string" },
+		"generation_name": {
+			"anyOf": [
+				{ "type": "string" },
+				{ "type": null }
+			]
+		},
+		"id": {
+			"format": "uuid",
+			"type": "string"
+		},
+		"legacy_product_name": {
+			"anyOf": [
+				{ "type": "string" },
+				{ "type": null }
+			]
+		},
+		"name": { "type": "string" },
+		"prefix": { "type": "string" },
+		"profile": {
+			"additionalProperties": "",
+			"properties": {
+				"bios_firmware": {
+					"anyOf": [
+						{ "type": "string" },
+						{ "type": null }
+					]
+				},
+				"cpu_num": { "type": "integer" },
+				"cpu_type": { "type": "string" },
+				"dimms_num": { "type": "integer" },
+				"hba_firmware": {
+					"anyOf": [
+						{ "type": "string" },
+						{ "type": null }
+					]
+				},
+				"id": {
+					"format": "uuid",
+					"type": "string"
+				},
+				"nics_num": { "type": "integer" },
+				"psu_total": { "type": "integer" },
+				"purpose": { "type": "string" },
+				"rack_unit": { "type": "integer" },
+				"ram_total": { "type": "integer" },
+				"sas_num": {
+					"anyOf": [
+						{ "type": "integer" },
+						{ "type": null }
+					]
+				},
+				"sas_size": {
+					"anyOf": [
+						{ "type": "integer" },
+						{ "type": null }
+					]
+				},
+				"sas_slots": {
+					"anyOf": [
+						{ "type": "integer" },
+						{ "type": null }
+					]
+				},
+				"sata_num": {
+					"anyOf": [
+						{ "type": "integer" },
+						{ "type": null }
+					]
+				},
+				"sata_size": {
+					"anyOf": [
+						{ "type": "integer" },
+						{ "type": null }
+					]
+				},
+				"sata_slots": {
+					"anyOf": [
+						{ "type": "string" },
+						{ "type": null }
+					]
+				},
+				"ssd_num": {
+					"anyOf": [
+						{ "type": "integer" },
+						{ "type": null }
+					]
+				},
+				"ssd_size": {
+					"anyOf": [
+						{ "type": "integer" },
+						{ "type": null }
+					]
+				},
+				"ssd_slots": {
+					"anyOf": [
+						{ "type": "string" },
+						{ "type": null }
+					]
+				},
+				"usb_num": {
+					"anyOf": [
+						{ "type": "integer" },
+						{ "type": null }
+					]
+				},
+				"zpool": {
+					"anyOf": [
+						{
+							"additionalProperties": "",
+							"properties": {
+								"cache": { "type": "integer" },
+								"disk_per": {
+									"anyOf": [
+										{ "type": "integer" },
+										{ "type": null }
+									]
+								},
+								"id": {
+									"format": "uuid",
+									"type": "string"
+								},
+								"log": { "type": "integer" },
+								"spare": { "type": "integer" },
+								"vdev_n": { "type": "integer" },
+								"vdev_t": { "type": "string" }
+							},
+							"required": [
+								"id",
+								"cache",
+								"log",
+								"disk_per",
+								"spare",
+								"vdev_n",
+								"vdev_t"
+							],
+							"type": "object"
+						},
+						{ "type": null }
+					]
+				}
+			},
+			"required": [
+				"bios_firmware",
+				"cpu_num",
+				"cpu_type",
+				"dimms_num",
+				"hba_firmware",
+				"id",
+				"nics_num",
+				"psu_total",
+				"purpose",
+				"rack_unit",
+				"ram_total",
+				"sas_num",
+				"sas_size",
+				"sas_slots",
+				"sata_num",
+				"sata_size",
+				"sata_slots",
+				"ssd_num",
+				"ssd_size",
+				"ssd_slots",
+				"usb_num",
+				"zpool"
+			],
+			"type": "object"
+		},
+		"sku": {
+			"anyOf": [
+				{ "type": "string" },
+				{ "type": null }
+			]
+		},
+		"specification": {
+			"anyOf": [
+				{ "type": "string" },
+				{ "type": null }
+			]
+		},
+		"vendor": {
+			"description": "Hardware product vendor name",
+			"type": "string"
+		}
+	},
+	"required": [
+		"id",
+		"name",
+		"alias",
+		"prefix",
+		"vendor",
+		"profile",
+		"generation_name",
+		"legacy_product_name",
+		"sku",
+		"specification"
+	],
+	"type": "object"
+}

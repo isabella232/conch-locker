@@ -1,0 +1,195 @@
+{
+    "additionalProperties": "",
+    "properties": {
+        "asset_tag": {
+            "anyOf": [
+                { "type": "string" },
+                { "type": null }
+            ]
+        },
+        "boot_phase": {
+            "anyOf": [
+                { "type": "string" },
+                { "type": null }
+            ]
+        },
+        "created": {
+            "format": "date-time",
+            "type": "string"
+        },
+        "graduated": {
+            "anyOf": [
+                {
+                    "format": "date-time",
+                    "type": "string"
+                },
+                { "type": null }
+            ]
+        },
+        "hardware_product": {
+            "format": "uuid",
+            "type": "string"
+        },
+        "health": { "type": "string" },
+        "id": { "type": "string" },
+        "last_seen": {
+            "anyOf": [
+                {
+                    "format": "date-time",
+                    "type": "string"
+                },
+                { "type": null }
+            ]
+        },
+        "latest_report": {
+            "anyOf": [
+                {
+                    "format": "uuid",
+                    "type": "string"
+                },
+                { "type": null }
+            ]
+        },
+        "latest_triton_reboot": {
+            "anyOf": [
+                {
+                    "format": "date-time",
+                    "type": "string"
+                },
+                { "type": null }
+            ]
+        },
+        "location": {
+            "anyOf": [
+                { "$ref": "#/definitions/DeviceLocation" },
+                { "type": null }
+            ]
+        },
+        "nics": {
+            "items": {
+                "additionalProperties": "",
+                "properties": {
+                    "iface_name": { "type": "string" },
+                    "iface_type": { "type": "string" },
+                    "iface_vendor": { "type": "string" },
+                    "mac": { "type": "string" },
+                    "peer_mac": {
+                        "anyOf": [
+                            { "type": "string" },
+                            { "type": null }
+                        ]
+                    },
+                    "peer_port": {
+                        "anyOf": [
+                            { "type": "string" },
+                            { "type": null }
+                        ]
+                    },
+                    "peer_switch": {
+                        "anyOf": [
+                            { "type": "string" },
+                            { "type": null }
+                        ]
+                    }
+                },
+                "required": [
+                    "mac",
+                    "iface_name",
+                    "iface_vendor",
+                    "peer_mac",
+                    "peer_port",
+                    "peer_switch"
+                ],
+                "type": "object"
+            },
+            "type": "array"
+        },
+        "role": {
+            "anyOf": [
+                {
+                    "format": "uuid",
+                    "type": "string"
+                },
+                { "type": null }
+            ]
+        },
+        "state": { "type": "string" },
+        "system_uuid": {
+            "format": "uuid",
+            "type": "string"
+        },
+        "triton_setup": {
+            "anyOf": [
+                {
+                    "format": "date-time",
+                    "type": "string"
+                },
+                { "type": null }
+            ]
+        },
+        "triton_uuid": {
+            "anyOf": [
+                {
+                    "format": "uuid",
+                    "type": "string"
+                },
+                { "type": null }
+            ]
+        },
+        "updated": {
+            "format": "date-time",
+            "type": "string"
+        },
+        "uptime_since": {
+            "anyOf": [
+                {
+                    "format": "date-time",
+                    "type": "string"
+                },
+                { "type": null }
+            ]
+        },
+        "validated": {
+            "anyOf": [
+                {
+                    "format": "date-time",
+                    "type": "string"
+                },
+                { "type": null }
+            ]
+        },
+        "validations": {
+            "anyOf": [
+                {
+                    "items": { "type": "object" },
+                    "type": "array"
+                },
+                { "type": null }
+            ]
+        }
+    },
+    "required": [
+        "asset_tag",
+        "boot_phase",
+        "created",
+        "hardware_product",
+        "health",
+        "id",
+        "graduated",
+        "last_seen",
+        "latest_report",
+        "latest_triton_reboot",
+        "role",
+        "state",
+        "system_uuid",
+        "triton_setup",
+        "triton_uuid",
+        "updated",
+        "uptime_since",
+        "validated",
+        "validations",
+        "location",
+        "nics"
+    ],
+    "type": "object"
+}

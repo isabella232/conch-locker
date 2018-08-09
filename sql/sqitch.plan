@@ -1,0 +1,7 @@
+%syntax-version=1.0.0
+%project=conch-locker
+%uri=https://github.com/joyent/conch-locker
+
+appschema 2018-08-02T18:57:48Z Chris Prather <chris@prather.org> # Add a schema for conch-locker
+auditlog [appschema] 2018-08-02T20:29:50Z Chris Prather <chris@prather.org> # add an audit log and triggers
+base_schema [auditlog] 2018-08-02T23:00:45Z Chris Prather <chris@prather.org> # add the basic schema now that the audit_log is in place

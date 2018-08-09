@@ -1,0 +1,24 @@
+{
+	"additionalProperties": "",
+	"properties": {
+		"alias": {
+			"anyOf": [
+				{ "type": "string" },
+				{ "type": null }
+			]
+		},
+		"az": { "type": "string" },
+		"id": {
+			"format": "uuid",
+			"type": "string"
+		},
+		"vendor_name": { "type": "string" }
+	},
+	"required": [
+		"id",
+		"az",
+		"alias",
+		"vendor_name"
+	],
+	"type": "object"
+}

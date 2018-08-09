@@ -1,0 +1,77 @@
+{
+	"additionalProperties": "",
+	"properties": {
+		"datacenter": {
+			"additionalProperties": "",
+			"properties": {
+				"id": {
+					"format": "uuid",
+					"type": "string"
+				},
+				"name": { "type": "string" },
+				"vendor_name": { "type": "string" }
+			},
+			"required": [
+				"id",
+				"name",
+				"vendor_name"
+			],
+			"type": "object"
+		},
+		"rack": {
+			"additionalProperties": "",
+			"properties": {
+				"id": {
+					"format": "uuid",
+					"type": "string"
+				},
+				"name": { "type": "string" },
+				"role": { "type": "string" },
+				"unit": { "type": "integer" }
+			},
+			"required": [
+				"id",
+				"name",
+				"role",
+				"unit"
+			],
+			"type": "object"
+		},
+		"target_hardware_product": {
+			"additionalProperties": "",
+			"description": "Details of the hardware product the device is expected to be based on it's current position and the rack layout.\n",
+			"properties": {
+				"alias": {
+					"description": "Hardware product alias",
+					"type": "string"
+				},
+				"id": {
+					"description": "Hardware product ID",
+					"format": "uuid",
+					"type": "string"
+				},
+				"name": {
+					"description": "Hardware product name",
+					"type": "string"
+				},
+				"vendor": {
+					"description": "Hardware product vendor name",
+					"type": "string"
+				}
+			},
+			"required": [
+				"id",
+				"name",
+				"alias",
+				"vendor"
+			],
+			"type": "object"
+		}
+	},
+	"required": [
+		"datacenter",
+		"rack",
+		"target_hardware_product"
+	],
+	"type": "object"
+}
