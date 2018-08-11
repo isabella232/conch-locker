@@ -1,5 +1,5 @@
 {
-	"additionalProperties": "",
+	"additionalProperties": {},
 	"properties": {
 		"bios_version": {
 			"type": "string"
@@ -20,7 +20,7 @@
 			"type": "string"
 		},
 		"system_uuid": {
-			"format": "uuid",
+			"pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$",
 			"type": "string"
 		}
 	},
