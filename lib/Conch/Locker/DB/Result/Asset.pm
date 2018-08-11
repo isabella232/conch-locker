@@ -168,6 +168,12 @@ __PACKAGE__->might_have(
 use 5.26.0;
 use experimental 'signatures';
 
-__PACKAGE__->many_to_many(components => 'asset_parts', 'part');
+__PACKAGE__->many_to_many( components => 'asset_parts', 'part' );
+
+__PACKAGE__->belongs_to(
+    'audit_log',
+    'Conch::Locker::DB::Result::AuditLog',
+    { "foreign.uuid" => "self.audit_id" },
+);
 
 1;

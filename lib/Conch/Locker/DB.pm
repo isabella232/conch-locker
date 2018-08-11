@@ -17,6 +17,15 @@ __PACKAGE__->load_namespaces;
 use 5.26.0;
 use experimental 'signatures';
 
+sub find_asset ( $self, $uuid ) {
+    $self->resultset('Asset')->search(
+        { id => $uuid },
+        {
+            join => 'audit_log',
+        }
+    )->first;
+}
+
 sub add_asset ( $self, $data ) {
     $self->resultset('Asset')->update_or_create($data);
 }

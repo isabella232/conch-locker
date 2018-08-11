@@ -62,4 +62,13 @@ post '/conch/import' => sub ($c) {
     );
 };
 
+get '/asset/:uuid' => sub ($c) {
+    my $uuid = $c->param('uuid');
+    if ( my $asset = $c->schema->find_asset($uuid) ) {
+        $c->render( json => $asset );
+        return;
+    }
+    $c->rendered(404);
+};
+
 app->start;
