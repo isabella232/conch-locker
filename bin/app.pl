@@ -30,8 +30,8 @@ helper valid_input => sub ( $c, $schema_file ) {
     my $validator = $c->validator_for($schema_file);
     my $json      = $c->req->json;
     if ( my @errors = $validator->validate($json) ) {
-        $c->app->log->error( "FAILED json validation for $schema_file:\n" . join "\n",
-            @errors );
+        $c->app->log->error(
+            "FAILED json validation for $schema_file:\n" . join "\n", @errors );
         $c->render( status => 400, json => { error => join( "\n", @errors ) } );
         return;
     }
@@ -50,11 +50,12 @@ post '/conch/import' => sub ($c) {
                 $c->app->log->info('importing detailed device');
                 try {
                     $c->schema->import_device_report($input);
+                    $c->rendered(204);
                 }
                 catch {
+                    $c->app->log->error("Couldn't import report: $_");
                     $c->render( status => 500, json => { error => $_ } );
                 };
-                $c->rendered(204);
             }
             return;
         },
