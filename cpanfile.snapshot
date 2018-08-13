@@ -170,6 +170,17 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       Test::More 0
+  Clone-PP-1.07
+    pathname: N/NE/NEILB/Clone-PP-1.07.tar.gz
+    provides:
+      Clone::PP 1.07
+    requirements:
+      Exporter 0
+      ExtUtils::MakeMaker 0
+      perl 5.006
+      strict 0
+      vars 0
+      warnings 0
   Config-General-2.63
     pathname: T/TL/TLINDEN/Config-General-2.63.tar.gz
     provides:
@@ -527,6 +538,29 @@ DISTRIBUTIONS
       Sub::Install 0.921
       strict 0
       warnings 0
+  Data-Printer-0.40
+    pathname: G/GA/GARU/Data-Printer-0.40.tar.gz
+    provides:
+      DDP undef
+      Data::Printer 0.40
+      Data::Printer::Filter undef
+      Data::Printer::Filter::DB undef
+      Data::Printer::Filter::DateTime undef
+      Data::Printer::Filter::Digest undef
+    requirements:
+      Carp 0
+      Clone::PP 0
+      ExtUtils::MakeMaker 0
+      Fcntl 0
+      File::HomeDir 0.91
+      File::Spec 0
+      File::Temp 0
+      Package::Stash 0.3
+      Scalar::Util 0
+      Sort::Naturally 0
+      Term::ANSIColor 3
+      Test::More 0.88
+      version 0.77
   DateTime-1.50
     pathname: D/DR/DROLSKY/DateTime-1.50.tar.gz
     provides:
@@ -1268,6 +1302,19 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       Test::More 0
+  JSON-Validator-2.08
+    pathname: J/JH/JHTHORSEN/JSON-Validator-2.08.tar.gz
+    provides:
+      JSON::Validator 2.08
+      JSON::Validator::Error undef
+      JSON::Validator::Joi undef
+      JSON::Validator::OpenAPI undef
+      JSON::Validator::OpenAPI::Dancer2 undef
+      JSON::Validator::OpenAPI::Mojolicious undef
+      JSON::Validator::Ref undef
+    requirements:
+      ExtUtils::MakeMaker 0
+      Mojolicious 7.28
   Lingua-EN-FindNumber-1.32
     pathname: N/NE/NEILB/Lingua-EN-FindNumber-1.32.tar.gz
     provides:
@@ -1466,8 +1513,17 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
-  Mojolicious-7.88
-    pathname: S/SR/SRI/Mojolicious-7.88.tar.gz
+  Mojo-JWT-0.07
+    pathname: J/JB/JBERGER/Mojo-JWT-0.07.tar.gz
+    provides:
+      Mojo::JWT 0.07
+    requirements:
+      Digest::SHA 0
+      MIME::Base64 3.11
+      Module::Build::Tiny 0
+      Mojolicious 5.00
+  Mojolicious-7.93
+    pathname: S/SR/SRI/Mojolicious-7.93.tar.gz
     provides:
       Mojo undef
       Mojo::Asset undef
@@ -1498,10 +1554,6 @@ DISTRIBUTIONS
       Mojo::IOLoop::Delay undef
       Mojo::IOLoop::Server undef
       Mojo::IOLoop::Stream undef
-      Mojo::IOLoop::Stream::HTTPClient undef
-      Mojo::IOLoop::Stream::HTTPServer undef
-      Mojo::IOLoop::Stream::WebSocketClient undef
-      Mojo::IOLoop::Stream::WebSocketServer undef
       Mojo::IOLoop::Subprocess undef
       Mojo::IOLoop::TLS undef
       Mojo::JSON undef
@@ -1540,7 +1592,7 @@ DISTRIBUTIONS
       Mojo::UserAgent::Transactor undef
       Mojo::Util undef
       Mojo::WebSocket undef
-      Mojolicious 7.88
+      Mojolicious 7.93
       Mojolicious::Command undef
       Mojolicious::Command::cgi undef
       Mojolicious::Command::cpanify undef
@@ -1830,6 +1882,13 @@ DISTRIBUTIONS
       Lingua::Stem::Snowball::Se 1.2
     requirements:
       Test::More 0.42
+  Sort-Naturally-1.03
+    pathname: B/BI/BINGOS/Sort-Naturally-1.03.tar.gz
+    provides:
+      Sort::Naturally 1.03
+    requirements:
+      ExtUtils::MakeMaker 0
+      perl 5
   Specio-0.42
     pathname: D/DR/DROLSKY/Specio-0.42.tar.gz
     provides:
@@ -2024,6 +2083,20 @@ DISTRIBUTIONS
       Try::Tiny 0.07
       strict 0
       warnings 0
+  Test-Most-0.35
+    pathname: O/OV/OVID/Test-Most-0.35.tar.gz
+    provides:
+      Test::Most 0.35
+      Test::Most::Exception 0.35
+    requirements:
+      Exception::Class 1.14
+      ExtUtils::MakeMaker 0
+      Test::Deep 0.119
+      Test::Differences 0.64
+      Test::Exception 0.43
+      Test::Harness 3.35
+      Test::More 1.302047
+      Test::Warn 0.30
   Test-PostgreSQL-1.26
     pathname: T/TJ/TJC/Test-PostgreSQL-1.26.tar.gz
     provides:
