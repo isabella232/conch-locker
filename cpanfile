@@ -4,6 +4,7 @@ requires 'DBD::Pg';
 requires 'DBIx::Class';
 requires 'DBIx::Class::Schema::Loader';
 requires 'Mojolicious' => 7.93;
+requires 'Mojo::JWT';
 
 requires 'Test::PostgreSQL';
 requires 'Test::Most';

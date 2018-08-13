@@ -16,9 +16,12 @@ $db->deploy;
 $db->dbic->import_device_report($device_report);    # load up the data
 
 my $t = Test::Mojo->new( path('./bin/app.pl') );
+$t->app->config->{dsn} = $db->dsn;
+my $jwt = $t->app->jwt->encode;
 
 my $uuid = $device_report->{system_uuid};
 
-$t->get_ok("/asset/$uuid")->status_is(200);
+$t->get_ok( "/asset/$uuid", { Authorization => "Bearer $jwt" } )
+  ->status_is(200);
 
 done_testing();

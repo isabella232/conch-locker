@@ -17,18 +17,29 @@ $db->deploy;
 
 my $t = Test::Mojo->new( path('./bin/app.pl') );
 $t->app->config->{dsn} = $db->dsn;
+my $jwt = $t->app->jwt->encode;
 
 # try give it an unsupported medai type (plain application/json)
-$t->post_ok( '/conch/import', json => {} )->status_is(415);
+$t->post_ok( '/conch/import', { Authorization => "Bearer $jwt" }, json => {} )
+  ->status_is(415);
 
 # give it a valid media type with an invalid document
-$t->post_ok( '/conch/import', { 'Content-Type' => $device_type }, json => {} )
-  ->status_is(400)->json_like( '/error' => qr/Missing property/ );
+$t->post_ok(
+    '/conch/import',
+    {
+        'Content-Type' => $device_type,
+        Authorization  => "Bearer $jwt"
+    },
+    json => {}
+)->status_is(400)->json_like( '/error' => qr/Missing property/ );
 
 # give it a valid request now
 $t->post_ok(
     '/conch/import',
-    { 'Content-Type' => $device_type },
+    {
+        'Content-Type' => $device_type,
+        Authorization  => "Bearer $jwt"
+    },
     json => $device_report
 )->status_is(204);
 
