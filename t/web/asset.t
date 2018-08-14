@@ -5,26 +5,23 @@ use lib qw(t/lib);
 
 use Conch::Locker::Test::PostgreSQL;
 use Mojo::JSON qw(decode_json);
-use Path::Tiny qw(path);
+use Mojo::File qw(path);
 use Test::Mojo;
 use Test::More;
 
-
-my $device_report =
-  decode_json path('./t/_assets/device_report.json')->slurp_utf8;
+my $device_report = decode_json path('./t/_assets/device_report.json')->slurp;
 
 my $db = Conch::Locker::Test::PostgreSQL->new;
 $db->deploy;
 $db->dbic->import_device_report($device_report);    # load up the data
 
-my $app = "./bin/app.pl";
-require $app // BAIL_OUT "Couldn't load $app";
-my $t = Test::Mojo->new( Mojo::Server->new->load_app($app) );
+my $t = Test::Mojo->new( path('./bin/app.pl') );
 $t->app->config->{dsn} = $db->dsn;
+my $jwt = $t->app->jwt->encode;
 
 my $uuid = $device_report->{system_uuid};
 
-use DDP;
-p $t->get_ok("/asset/$uuid")->status_is(200)->tx->res->json;;
+$t->get_ok( "/asset/$uuid", { Authorization => "Bearer $jwt" } )
+  ->status_is(200);
 
 done_testing();

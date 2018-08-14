@@ -13,11 +13,13 @@ app->types->type(
 
 plugin 'Config' => {
     default => {
-        dsn => 'dbi:Pg:database=conch-locker',
+        dsn     => $ENV{CONCH_LOCKER_DSN} // 'dbi:Pg:database=conch-locker',
+        secrets => [ $ENV{CONCH_LOCKER_SECRET} // 'abcde' ],
     },
 };
 
 plugin 'RespondFor';
+plugin 'JWT';
 
 helper validator_for => sub ( $c, $schema_loc ) {
     my $schema = app->home->child( '../json-schema' => $schema_loc )->slurp;
@@ -40,6 +42,18 @@ helper valid_input => sub ( $c, $schema_file ) {
 
 helper schema => sub ($c) {
     Conch::Locker::DB->connect( app->config->{dsn} );
+};
+
+under sub ($c) {
+    return 1 if $c->validate_jwt( $c->bearer_token );
+    $c->rendered(401) && return;
+};
+
+post '/me/tokens' => sub  ($c) {
+    $c->render(
+        status => 201,
+        json   => { token => $c->jwt->encode() }
+    );
 };
 
 post '/conch/import' => sub ($c) {
@@ -71,4 +85,6 @@ get '/asset/:uuid' => sub ($c) {
     $c->rendered(404);
 };
 
+# set up the secrets
+app->secrets(app->config->{secrets});
 app->start;
