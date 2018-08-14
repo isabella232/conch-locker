@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS conch_locker.business (
 CREATE TABLE IF NOT EXISTS conch_locker.location (
   id uuid PRIMARY KEY  DEFAULT uuid_generate_v1mc() NOT NULL,
   name text NOT NULL,
+  location_type text NOT NULL,
   parent_id uuid,
   data_center_id uuid,
   audit_id uuid NOT NULL,
