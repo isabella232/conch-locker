@@ -21,7 +21,10 @@ my $jwt = $t->app->jwt->encode;
 
 my $uuid = $device_data->{system_uuid};
 
-$t->get_ok( "/asset/$uuid", { Authorization => "Bearer $jwt" } )
-  ->status_is(200);
+use DDP;
+$t->get_ok("/asset/$uuid", { Authorization => "Bearer $jwt" })->status_is(200)
+    ->json_has('/_links', 'has links')
+    ->json_has('/_embedded/components', 'has components')
+    ->json_has('/metadata', 'has metadata');
 
 done_testing();

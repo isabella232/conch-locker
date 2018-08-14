@@ -17,7 +17,7 @@ __PACKAGE__->load_namespaces;
 use 5.26.0;
 use experimental 'signatures';
 
-sub find_asset ( $self, $uuid ) {
+sub find_asset_by_id ( $self, $uuid ) {
     $self->resultset('Asset')->search(
         { id => $uuid },
         {

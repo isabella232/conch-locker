@@ -104,13 +104,42 @@ post '/conch/import' => sub ($c) {
 
 get '/asset/:uuid' => sub ($c) {
     my $uuid = $c->param('uuid');
-    if ( my $asset = $c->schema->find_asset($uuid) ) {
-        $c->render( json => $asset );
+    if ( my $asset = $c->schema->find_asset_by_id($uuid) ) {
+        my $hal = HAL::Tiny->new(
+            state => $asset->TO_JSON,
+            links => {
+                self     => "/asset/${ \$asset->id }",
+                #archives => "/audit/${ \$asset->audit_id }",
+            },
+            embedded => {
+                components => [
+                    map {
+                        HAL::Tiny->new(
+                            state => $_->TO_JSON,
+                            links => { self => "/asset/${ \$_->asset->id }" },
+                          )
+                    } $asset->components->all
+                ],
+            },
+        );
+        $c->render( json => $hal->as_hashref );
         return;
     }
     $c->rendered(404);
 };
 
-# set up the secrets
+get '/asset' => sub ($c) {
+    $c->rendered(418);
+};
+
+#get '/audit/:uuid' => sub ($c) {
+#    my $uuid = $c->param('uuid');
+#    if ( my $part = $c->schema->find_audit($uuid) ) {
+#        $c->render( json => $part );
+#        return;
+#    }
+#    $c->rendered(404);
+#};
+
 app->secrets(app->config->{secrets});
 app->start;
