@@ -1,6 +1,7 @@
 #!/usr/bin/env perl
 use 5.26.0;
 use warnings;
+use experimental 'signatures';
 use lib qw(t/lib);
 
 use Conch::Locker::Test::PostgreSQL;
@@ -9,8 +10,17 @@ use Mojo::File qw(path);
 use Test::Mojo;
 use Test::More;
 
-my $device_type   = 'application/vnd.joyent.conch-device-report+json';
-my $device_report = decode_json path('./t/_assets/device_report.json')->slurp;
+my $location_is = sub ( $t, $value, $desc="" ) {
+    $desc ||= "Location: $value";
+    local $Test::Builder::Level = $Test::Builder::Level + 1;
+    return $t->success( is( $t->tx->res->headers->location, $value, $desc ) );
+};
+
+my $device_type        = 'application/vnd.joyent.conch-device-data+json';
+my $device_report_type = 'application/vnd.joyent.conch-device-report+json';
+
+my $device_data = decode_json path('./t/_assets/conch-device-server.json')->slurp;
+my $device_report_data = decode_json path('./t/_assets/device-report-server.json')->slurp;
 
 my $db = Conch::Locker::Test::PostgreSQL->new;
 $db->deploy;
@@ -40,8 +50,9 @@ $t->post_ok(
         'Content-Type' => $device_type,
         Authorization  => "Bearer $jwt"
     },
-    json => $device_report
-)->status_is(204);
+    json => $device_data,
+)->status_is(204)
+->$location_is("/asset/${\uc $device_data->{system_uuid} }");
 
 # and make sure everything ended up where it belongs
 my $schema = $db->dbic;
@@ -49,5 +60,15 @@ my $schema = $db->dbic;
 my $server =
   $schema->resultset('Asset')->search( { asset_type => 'server' } )->first;
 ok $server->components->count > 0, 'got components';
+
+$t->post_ok(
+    '/conch/import',
+    {
+        'Content-Type' => $device_report_type,
+        Authorization => "Bearer $jwt",
+    },
+    json => $device_report_data,
+)->status_is(204)
+->$location_is("/asset/${\uc $device_report_data->{system_uuid} }");
 
 done_testing();

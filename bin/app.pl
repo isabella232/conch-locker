@@ -8,8 +8,12 @@ use HAL::Tiny;
 use JSON::Validator;
 use Try::Tiny;
 
-app->types->type(
-    device_report => 'application/vnd.joyent.conch-device-report+json' );
+my %types = (
+    conch_device  => 'application/vnd.joyent.conch-device-data+json',
+    device_report => 'application/vnd.joyent.conch-device-report+json',
+);
+
+app->types->type( $_ => $types{$_} ) for keys %types;
 
 plugin 'Config' => {
     default => {
@@ -44,6 +48,11 @@ helper schema => sub ($c) {
     Conch::Locker::DB->connect( app->config->{dsn} );
 };
 
+
+helper location => sub ($c, @parts) {
+    $c->res->headers->location( $c->url_for(@parts) );
+};
+
 under sub ($c) {
     return 1 if $c->validate_jwt( $c->bearer_token );
     $c->rendered(401) && return;
@@ -58,12 +67,29 @@ post '/me/tokens' => sub  ($c) {
 
 post '/conch/import' => sub ($c) {
     $c->respond_for(
+        conch_device => sub {
+            my $schema = 'conch-device.schema.json';
+            if ( my $input = $c->valid_input($schema) ) {
+                $c->app->log->info('importing device from conch');
+                try {
+                    my $asset = $c->schema->import_conch_device($input);
+                    $c->location("/asset/${\$asset->id}");
+                    $c->rendered(204);
+                }
+                catch {
+                    $c->app->log->error("Couldn't import device $_");
+                    $c->render( status => 500, json => { error => $_ } );
+                };
+            }
+            return;
+        },
         device_report => sub {
             my $schema = 'device-report.schema.json';
             if ( my $input = $c->valid_input($schema) ) {
-                $c->app->log->info('importing detailed device');
+                $c->app->log->info('importing device report');
                 try {
-                    $c->schema->import_device_report($input);
+                    my $asset = $c->schema->import_device_report($input);
+                    $c->location("/asset/${\$asset->id}");
                     $c->rendered(204);
                 }
                 catch {
