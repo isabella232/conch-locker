@@ -71,6 +71,7 @@ __PACKAGE__->table("conch_locker.asset");
 =head2 location_id
 
   data_type: 'uuid'
+  is_foreign_key: 1
   is_nullable: 1
   size: 16
 
@@ -98,7 +99,7 @@ __PACKAGE__->add_columns(
   "audit_id",
   { data_type => "uuid", is_nullable => 0, size => 16 },
   "location_id",
-  { data_type => "uuid", is_nullable => 1, size => 16 },
+  { data_type => "uuid", is_foreign_key => 1, is_nullable => 1, size => 16 },
   "metadata",
   { data_type => "jsonb", is_nullable => 1 },
 );
@@ -146,6 +147,26 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
+=head2 location
+
+Type: belongs_to
+
+Related object: L<Conch::Locker::DB::Result::Location>
+
+=cut
+
+__PACKAGE__->belongs_to(
+  "location",
+  "Conch::Locker::DB::Result::Location",
+  { id => "location_id" },
+  {
+    is_deferrable => 0,
+    join_type     => "LEFT",
+    on_delete     => "NO ACTION",
+    on_update     => "NO ACTION",
+  },
+);
+
 =head2 part
 
 Type: might_have
@@ -162,8 +183,8 @@ __PACKAGE__->might_have(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07049 @ 2018-08-09 03:27:52
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:iJ2AWFdChzDTp5FABKaENA
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2018-08-14 19:55:37
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:yYRovWObUbEjc9n/jxJi2g
 
 use 5.26.0;
 use experimental 'signatures';

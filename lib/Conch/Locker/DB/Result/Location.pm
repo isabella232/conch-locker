@@ -52,6 +52,11 @@ __PACKAGE__->table("conch_locker.location");
   data_type: 'text'
   is_nullable: 0
 
+=head2 location_type
+
+  data_type: 'text'
+  is_nullable: 0
+
 =head2 parent_id
 
   data_type: 'uuid'
@@ -60,6 +65,13 @@ __PACKAGE__->table("conch_locker.location");
   size: 16
 
 =head2 data_center_id
+
+  data_type: 'uuid'
+  is_foreign_key: 1
+  is_nullable: 1
+  size: 16
+
+=head2 vendor_id
 
   data_type: 'uuid'
   is_foreign_key: 1
@@ -89,9 +101,13 @@ __PACKAGE__->add_columns(
   },
   "name",
   { data_type => "text", is_nullable => 0 },
+  "location_type",
+  { data_type => "text", is_nullable => 0 },
   "parent_id",
   { data_type => "uuid", is_foreign_key => 1, is_nullable => 1, size => 16 },
   "data_center_id",
+  { data_type => "uuid", is_foreign_key => 1, is_nullable => 1, size => 16 },
+  "vendor_id",
   { data_type => "uuid", is_foreign_key => 1, is_nullable => 1, size => 16 },
   "audit_id",
   { data_type => "uuid", is_nullable => 0, size => 16 },
@@ -112,6 +128,21 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key("id");
 
 =head1 RELATIONS
+
+=head2 assets
+
+Type: has_many
+
+Related object: L<Conch::Locker::DB::Result::Asset>
+
+=cut
+
+__PACKAGE__->has_many(
+  "assets",
+  "Conch::Locker::DB::Result::Asset",
+  { "foreign.location_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
 
 =head2 data_center
 
@@ -183,8 +214,28 @@ __PACKAGE__->belongs_to(
   },
 );
 
+=head2 vendor
 
-# Created by DBIx::Class::Schema::Loader v0.07049 @ 2018-08-09 03:27:52
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:IeINa67ts1PIChGv7pcqKw
+Type: belongs_to
+
+Related object: L<Conch::Locker::DB::Result::Vendor>
+
+=cut
+
+__PACKAGE__->belongs_to(
+  "vendor",
+  "Conch::Locker::DB::Result::Vendor",
+  { id => "vendor_id" },
+  {
+    is_deferrable => 0,
+    join_type     => "LEFT",
+    on_delete     => "NO ACTION",
+    on_update     => "NO ACTION",
+  },
+);
+
+
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2018-08-14 19:55:37
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:2mBRp1+t5Pl8Fw/tyzC/vw
 
 1;
