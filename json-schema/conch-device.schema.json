@@ -1,0 +1,277 @@
+{
+    "additionalProperties": {},
+    "properties": {
+        "asset_tag": {
+            "anyOf": [
+                { "type": "string" },
+                { "type": "null" }
+            ]
+        },
+        "boot_phase": {
+            "anyOf": [
+                { "type": "string" },
+                { "type": "null" }
+            ]
+        },
+        "created": {
+            "format": "date-time",
+            "type": "string"
+        },
+        "graduated": {
+            "anyOf": [
+                {
+                    "format": "date-time",
+                    "type": "string"
+                },
+                { "type": "null" }
+            ]
+        },
+        "hardware_product": {
+			"pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$",
+			"type": "string"
+		},
+        "health": { "type": "string" },
+        "id": { "type": "string" },
+        "last_seen": {
+            "anyOf": [
+                {
+                    "format": "date-time",
+                    "type": "string"
+                },
+                { "type": "null" }
+            ]
+        },
+        "latest_report": {
+            "anyOf": [
+                {
+                    "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$",
+                    "type": "string"
+                },
+                { "type": "null" },
+                { "type": "object" }
+            ]
+        },
+        "latest_triton_reboot": {
+            "anyOf": [
+                {
+                    "format": "date-time",
+                    "type": "string"
+                },
+                { "type": "null" }
+            ]
+        },
+        "location": {
+            "anyOf": [
+                { "$ref": "#/definitions/deviceLocation" },
+                { "type": "null" }
+            ]
+        },
+        "nics": {
+            "items": {
+                "additionalProperties": {},
+                "properties": {
+                    "iface_name": { "type": "string" },
+                    "iface_type": { "type": "string" },
+                    "iface_vendor": { "type": "string" },
+                    "mac": { "type": "string" },
+                    "peer_mac": {
+                        "anyOf": [
+                            { "type": "string" },
+                            { "type": "null" }
+                        ]
+                    },
+                    "peer_port": {
+                        "anyOf": [
+                            { "type": "string" },
+                            { "type": "null" }
+                        ]
+                    },
+                    "peer_switch": {
+                        "anyOf": [
+                            { "type": "string" },
+                            { "type": "null" }
+                        ]
+                    }
+                },
+                "required": [
+                    "mac",
+                    "iface_name",
+                    "iface_vendor",
+                    "peer_mac",
+                    "peer_port",
+                    "peer_switch"
+                ],
+                "type": "object"
+            },
+            "type": "array"
+        },
+        "role": {
+            "anyOf": [
+                {
+                    "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$",
+                    "type": "string"
+                }
+                ,
+                { "type": "null" }
+            ]
+        },
+        "state": { "type": "string" },
+        "system_uuid": {
+                    "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$",
+                    "type": "string"
+                },
+        "triton_setup": {
+            "anyOf": [
+                {
+                    "format": "date-time",
+                    "type": "string"
+                },
+                { "type": "null" }
+            ]
+        },
+        "triton_uuid": {
+            "anyOf": [
+                {
+                    "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$",
+                    "type": "string"
+                },
+                { "type": "null" }
+            ]
+        },
+        "updated": {
+            "format": "date-time",
+            "type": "string"
+        },
+        "uptime_since": {
+            "anyOf": [
+                {
+                    "format": "date-time",
+                    "type": "string"
+                },
+                { "type": "null" }
+            ]
+        },
+        "validated": {
+            "anyOf": [
+                {
+                    "format": "date-time",
+                    "type": "string"
+                },
+                { "type": "null" }
+            ]
+        },
+        "validations": {
+            "anyOf": [
+                {
+                    "items": { "type": "object" },
+                    "type": "array"
+                },
+                { "type": "null" }
+            ]
+        }
+    },
+    "required": [
+        "asset_tag",
+        "boot_phase",
+        "created",
+        "hardware_product",
+        "health",
+        "id",
+        "graduated",
+        "last_seen",
+        "latest_report",
+        "latest_triton_reboot",
+        "role",
+        "state",
+        "system_uuid",
+        "triton_setup",
+        "triton_uuid",
+        "updated",
+        "uptime_since",
+        "validated",
+        "validations",
+        "location",
+        "nics"
+    ],
+    "type": "object",
+    "definitions": {
+        "deviceLocation": {
+            "additionalProperties": {},
+            "properties": {
+                "datacenter": {
+                    "additionalProperties": {},
+                    "properties": {
+                        "id": {
+                    "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$",
+                    "type": "string"
+                },
+                        "name": { "type": "string" },
+                        "vendor_name": { "type": "string" }
+                    },
+                    "required": [
+                        "id",
+                        "name",
+                        "vendor_name"
+                    ],
+                    "type": "object"
+                },
+                "rack": {
+                    "additionalProperties": {},
+                    "properties": {
+                        "id": {
+                    "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$",
+                    "type": "string"
+                },
+                        "name": { "type": "string" },
+                        "role": { "type": "string" },
+                        "unit": { "type": "integer" }
+                    },
+                    "required": [
+                        "id",
+                        "name",
+                        "role",
+                        "unit"
+                    ],
+                    "type": "object"
+                },
+                "target_hardware_product": {
+                    "additionalProperties": {},
+                    "description": "Details of the hardware product the device is expected to be based on it's current position and the rack layout.\n",
+                    "properties": {
+                        "alias": {
+                            "description": "Hardware product alias",
+                            "type": "string"
+                        },
+                        "id": {
+
+                            "description": "Hardware product ID",
+                    "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$",
+                    "type": "string"
+                },
+                        "name": {
+                            "description": "Hardware product name",
+                            "type": "string"
+                        },
+                        "vendor": {
+                            "description": "Hardware product vendor name",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "id",
+                        "name",
+                        "alias",
+                        "vendor"
+                    ],
+                    "type": "object"
+                }
+            },
+            "required": [
+                "datacenter",
+                "rack",
+                "target_hardware_product"
+            ],
+            "type": "object"
+        }
+    }
+}

@@ -73,6 +73,7 @@ __PACKAGE__->table("conch_locker.part");
 =head2 vendor_id
 
   data_type: 'uuid'
+  is_foreign_key: 1
   is_nullable: 1
   size: 16
 
@@ -100,7 +101,7 @@ __PACKAGE__->add_columns(
   "audit_id",
   { data_type => "uuid", is_nullable => 0, size => 16 },
   "vendor_id",
-  { data_type => "uuid", is_nullable => 1, size => 16 },
+  { data_type => "uuid", is_foreign_key => 1, is_nullable => 1, size => 16 },
   "metadata",
   { data_type => "jsonb", is_nullable => 1 },
 );
@@ -175,9 +176,29 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
+=head2 vendor
 
-# Created by DBIx::Class::Schema::Loader v0.07049 @ 2018-08-09 03:27:52
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:HDOBv2nybKH2JvYvz6Xf9A
+Type: belongs_to
+
+Related object: L<Conch::Locker::DB::Result::Vendor>
+
+=cut
+
+__PACKAGE__->belongs_to(
+  "vendor",
+  "Conch::Locker::DB::Result::Vendor",
+  { id => "vendor_id" },
+  {
+    is_deferrable => 0,
+    join_type     => "LEFT",
+    on_delete     => "NO ACTION",
+    on_update     => "NO ACTION",
+  },
+);
+
+
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2018-08-14 19:32:31
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:TJ7IB/JjWBxcv946+fQifQ
 
 use 5.26.0;
 use experimental 'signatures';

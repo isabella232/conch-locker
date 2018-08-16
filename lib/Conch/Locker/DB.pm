@@ -1,4 +1,5 @@
 use utf8;
+
 package Conch::Locker::DB;
 
 # Created by DBIx::Class::Schema::Loader
@@ -11,9 +12,8 @@ use base 'DBIx::Class::Schema';
 
 __PACKAGE__->load_namespaces;
 
-
-# Created by DBIx::Class::Schema::Loader v0.07049 @ 2018-08-07 22:34:02
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:ypejI5LNH4m35r+yTkRAgw
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2018-08-14 19:55:37
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:TUF+x4BlE169nk9DBhUpyA
 use 5.26.0;
 use experimental 'signatures';
 
@@ -37,13 +37,58 @@ sub add_part ( $self, $data ) {
     $self->resultset('Part')->update_or_create($data);
 }
 
+sub add_location ( $self, $data ) {
+    $self->resultset('Location')->update_or_create($data);
+}
+
+sub import_conch_device ( $self, $data ) {
+    my $asset = $self->import_device_report( $data->{latest_report} );
+
+    my $dc = $data->{location}{datacenter};
+    $self->add_location(
+        {
+            id            => $dc->{id},
+            name          => $dc->{name},
+            location_type => 'datacenter',
+            metadata      => $dc,
+        }
+    );
+
+    my $rack_data     = $data->{location}{rack};
+    my $rack_location = $self->add_location(
+        {
+            id             => $rack_data->{id},
+            name           => $rack_data->{name},
+            location_type  => 'rack',
+            parent_id      => $dc->{id},
+            data_center_id => $dc->{id},
+            metadata       => $rack_data,
+        }
+    );
+
+    $self->add_asset(
+        {
+            name          => $rack_data->{name},
+            asset_type    => 'rack',
+            location_id   => $rack_data->{id},
+            serial_number => $rack_data->{id},
+            metadata      => $rack_data,
+        }
+    );
+
+    $asset->location($rack_location);
+    $asset->update;
+
+    return $asset;
+}
+
 sub import_device_report ( $self, $data ) {
 
     my $asset = $self->add_asset(
         {
-            id            => $data->{system_uuid},
-            name          => $data->{product_name},
-            asset_type    => 'server',
+            id         => $data->{system_uuid},
+            name       => $data->{product_name},
+            asset_type => $data->{device_type} // 'server',
             serial_number => $data->{serial_number},
             metadata      => {
                 bios_version  => $data->{bios_version},
@@ -137,6 +182,21 @@ sub import_device_report ( $self, $data ) {
             )
         );
     }
+
+    for my $psu ( $data->{psus}{units}->@* ) {
+        $asset->add_to_components(
+            $self->add_part(
+                {
+                    asset_type    => 'psu',
+                    name          => $psu->{serial},
+                    serial_number => $psu->{serial},
+                    metadata      => $psu
+                }
+            )
+        );
+    }
+
+    return $asset;
 }
 
 1;
