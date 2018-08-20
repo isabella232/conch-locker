@@ -48,8 +48,7 @@ helper schema => sub ($c) {
     Conch::Locker::DB->connect( app->config->{dsn} );
 };
 
-
-helper location => sub ($c, @parts) {
+helper location => sub ( $c, @parts ) {
     $c->res->headers->location( $c->url_for(@parts) );
 };
 
@@ -108,7 +107,8 @@ get '/asset/:uuid' => sub ($c) {
         my $hal = HAL::Tiny->new(
             state => $asset->TO_JSON,
             links => {
-                self     => "/asset/${ \$asset->id }",
+                self => "/asset/${ \$asset->id }",
+
                 #archives => "/audit/${ \$asset->audit_id }",
             },
             embedded => {
@@ -129,7 +129,63 @@ get '/asset/:uuid' => sub ($c) {
 };
 
 get '/asset' => sub ($c) {
-    $c->rendered(418);
+    my $args   = $c->req->params->to_hash;
+    my $assets = $c->schema->resultset('Asset');
+
+    if ( my $name = delete $args->{location} ) {
+        my $rs = $c->schema->resultset('Location');
+        my $dc = $rs->search( { name => $name } )->first;
+        unless ($dc) {
+            $c->app->log->info("No datacenter found for $name");
+            return $c->rendered(404);
+        }
+        $assets = $assets->search( { 'location.data_center_id' => $dc->id },
+            { join => 'location' } );
+    }
+
+    # TODO replace this with something more dynamic or less crappy
+    my %fields = (
+        id            => 'id',
+        name          => 'name',
+        type          => 'asset_type',
+        serial_number => 'serial_number',
+    );
+    for my $key ( map { lc } keys $args->%* ) {
+        if ( my $db_col = $fields{$key} ) {
+            $args->{$db_col} = delete $args->{$key};
+        }
+        else {
+            my $value = delete $args->{$key};
+            warn $key;
+            $args->{'me.metadata'} = { ' ->> ' . "'$key' =", $value };
+        }
+    }
+    my $rs = $assets->search($args);
+    if ( $rs->count > 0 ) {
+        my $hal = HAL::Tiny->new(
+            state => {
+                total => $rs->count,
+            },
+            links => {
+
+                #self     => "/asset/${ \$asset->id }",
+            },
+            embedded => {
+                assets => [
+                    map {
+                        HAL::Tiny->new(
+                            state => $_->TO_JSON,
+                            links => { self => "/asset/${ \$_->id }" },
+                          )
+                    } $rs->all
+                ],
+            },
+        );
+        $c->render( json => $hal->as_hashref );
+    }
+    else {
+        $c->rendered(404);
+    }
 };
 
 #get '/audit/:uuid' => sub ($c) {
@@ -141,5 +197,5 @@ get '/asset' => sub ($c) {
 #    $c->rendered(404);
 #};
 
-app->secrets(app->config->{secrets});
+app->secrets( app->config->{secrets} );
 app->start;
