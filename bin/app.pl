@@ -157,7 +157,7 @@ get '/asset' => sub ($c) {
         else {
             my $value = delete $args->{$key};
             warn $key;
-            $args->{'me.metadata'} = { ' ->> ' . "'$key' =", $value };
+            $args->{'me.metadata'} = \[ ' ->> ' . "'$key' = ?", $value ];
         }
     }
     my $rs = $assets->search($args);
