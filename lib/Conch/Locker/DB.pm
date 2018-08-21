@@ -17,7 +17,7 @@ __PACKAGE__->load_namespaces;
 use 5.26.0;
 use experimental 'signatures';
 
-sub find_asset ( $self, $uuid ) {
+sub find_asset_by_id ( $self, $uuid ) {
     $self->resultset('Asset')->search(
         { id => $uuid },
         {
@@ -33,6 +33,7 @@ sub add_asset ( $self, $data ) {
 sub add_part ( $self, $data ) {
     my $asset = $self->add_asset($data);
     delete $data->{asset_type};
+    delete $data->{location_id};
     $data->{asset_id} = $asset->id;
     $self->resultset('Part')->update_or_create($data);
 }
@@ -42,7 +43,8 @@ sub add_location ( $self, $data ) {
 }
 
 sub import_conch_device ( $self, $data ) {
-    my $asset = $self->import_device_report( $data->{latest_report} );
+    die "data isn't reference" unless ref $data;
+
 
     my $dc = $data->{location}{datacenter};
     $self->add_location(
@@ -76,21 +78,21 @@ sub import_conch_device ( $self, $data ) {
         }
     );
 
-    $asset->location($rack_location);
-    $asset->update;
+    my $asset = $self->import_device_report( $data->{latest_report}, $rack_location );
 
     return $asset;
 }
 
-sub import_device_report ( $self, $data ) {
+sub import_device_report ( $self, $data, $location = undef ) {
 
     my $asset = $self->add_asset(
         {
-            id         => $data->{system_uuid},
-            name       => $data->{product_name},
-            asset_type => $data->{device_type} // 'server',
+            id            => $data->{system_uuid},
+            name          => $data->{product_name},
+            asset_type    => $data->{device_type} // 'server',
             serial_number => $data->{serial_number},
-            metadata      => {
+            $location ? ( location_id => $location->id ) : (),
+            metadata => {
                 bios_version  => $data->{bios_version},
                 latest_report => $data->{report_id},
                 state         => $data->{state},
@@ -98,6 +100,16 @@ sub import_device_report ( $self, $data ) {
                 uptime_since  => $data->{uptime_since},
                 sku           => $data->{sku},
             },
+        }
+    );
+
+    my $asset_location = $self->add_location(
+        {
+            id            => $asset->id,
+            name          => $asset->name,
+            location_type => $asset->asset_type,
+            $asset->location ? ( parent_id => $asset->location->id ) : (),
+            data_center_id => $asset->location->data_center_id,
         }
     );
 
@@ -121,6 +133,7 @@ sub import_device_report ( $self, $data ) {
             $self->add_part(
                 {
                     asset_type    => 'dimm',
+                    location_id   => $asset_location->id,
                     name          => $name,
                     serial_number => $serial_number,
                     metadata      => $dimm,
@@ -144,6 +157,7 @@ sub import_device_report ( $self, $data ) {
             $self->add_part(
                 {
                     asset_type    => 'disk',
+                    location_id   => $asset_location->id,
                     name          => $name,
                     serial_number => $sn,
                     metadata      => $disk,
@@ -160,6 +174,7 @@ sub import_device_report ( $self, $data ) {
     #            {
     #                name     => "HBA $hba->{type}",
     #                asset_type     => 'hba',
+    #                location_id   => $asset_location->id,
     #                metadata => $hba,
     #            }
     #        )
@@ -175,6 +190,7 @@ sub import_device_report ( $self, $data ) {
             $self->add_part(
                 {
                     asset_type    => 'nic',
+                    location_id   => $asset_location->id,
                     name          => $nic->{product},
                     serial_number => $nic->{mac},
                     metadata      => $nic,
@@ -188,6 +204,7 @@ sub import_device_report ( $self, $data ) {
             $self->add_part(
                 {
                     asset_type    => 'psu',
+                    location_id   => $asset_location->id,
                     name          => $psu->{serial},
                     serial_number => $psu->{serial},
                     metadata      => $psu

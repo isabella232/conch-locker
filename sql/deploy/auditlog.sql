@@ -14,10 +14,14 @@ CREATE TABLE IF NOT EXISTS conch_locker.audit_log (
     action text NOT NULL,
     table_schema text NOT NULL,
     table_name text NOT NULL,
+    previous_id uuid,
     old_row jsonb,
     new_row jsonb,
     CONSTRAINT audit_log_check CHECK ( CASE action WHEN 'INSERT' THEN old_row IS NULL WHEN 'DELETE' THEN new_row IS NULL END )
 );
+
+ALTER TABLE conch_locker.audit_log
+ADD CONSTRAINT previous_foreign_key FOREIGN KEY (previous_id) REFERENCES conch_locker.audit_log (uuid);
 
 CREATE OR REPLACE FUNCTION add_logging_items(schema_name TEXT, table_name TEXT)
 RETURNS VOID
@@ -54,6 +58,7 @@ BEGIN
         action,
         table_schema,
         table_name,
+        previous_id,
         old_row,
         new_row
     )
@@ -61,6 +66,7 @@ BEGIN
         TG_OP,
         TG_TABLE_SCHEMA,
         TG_RELNAME,
+        CASE WHEN TG_OP <> 'INSERT' THEN OLD.audit_id END,
         CASE WHEN TG_OP <> 'INSERT' THEN row_to_json(OLD)::jsonb END,
         CASE WHEN TG_OP <> 'DELETE' THEN row_to_json(NEW)::jsonb END
     ) RETURNING uuid INTO STRICT NEW.audit_id;
