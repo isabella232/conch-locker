@@ -66,6 +66,7 @@ sub deploy ($self) {
     );
 
     $deploy->execute;
+    return $self;
 }
 
 1;
